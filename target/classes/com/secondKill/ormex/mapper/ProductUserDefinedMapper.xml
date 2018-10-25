@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.secondKill.ormex.dao.ProductUserDefinedMapper" >
+  <resultMap id="BaseResultMap" type="com.secondKill.vo.ProductInformationVo" >
+    <constructor >
+      <idArg column="product_id" jdbcType="BIGINT" javaType="java.lang.Long" />
+      <arg column="product_name" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="begin_time" jdbcType="TIMESTAMP" javaType="java.util.Date" />
+    </constructor>
+  </resultMap>
+
+  <sql id="Base_Column_List" >
+    product_id, product_name, begin_time
+  </sql>
+  <select id="selectVoList" resultType="com.secondKill.pojo.Seckill">
+    select product_id, product_name, begin_time,end_time
+    from seckill
+  </select>
+
+</mapper>

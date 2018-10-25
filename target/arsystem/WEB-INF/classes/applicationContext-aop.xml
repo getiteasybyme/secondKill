@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/context
+       http://www.springframework.org/schema/context/spring-context.xsd
+       http://www.springframework.org/schema/mvc
+       http://www.springframework.org/schema/mvc/spring-mvc.xsd
+       http://www.springframework.org/schema/aop
+       http://www.springframework.org/schema/aop/spring-aop.xsd">
+
+
+    <!-- 使能AOP-->
+    <aop:aspectj-autoproxy/>
+
+    <!-- 自动装载bean使能-->
+    <!--<context:component-scan base-package="com.secondKill.aopInterceptor"/>-->
+    <!--<context:annotation-config/>-->
+
+    <!--<bean id="OrderGeneratedAspect" class="com.secondKill.aopInterceptor.OrderGeneratedAspect" />-->
+
+    <!--&lt;!&ndash; 由于该切面的切入点是针对@DBAccessLogger注解，这些注解只在service包下，-->
+         <!--因此，该xml文件应该被包含在applicationContext xml文件下。 &ndash;&gt;-->
+    <!--<aop:config>-->
+        <!--<aop:aspect ref="OrderGeneratedAspect">-->
+            <!--<aop:after-returning method="execute" pointcut="@annotation(com.secondKill.aopInterceptor.OrderGenerated)"-->
+            <!--returning = "rvt"/>-->
+        <!--</aop:aspect>-->
+    <!--</aop:config>-->
+   
+</beans>

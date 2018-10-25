@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.secondKill.ormex.dao.OrderUserDefinedMapper" >
+  <resultMap id="BaseResultMap" type="com.secondKill.vo.OrderInformationVo" >
+    <constructor >
+      <idArg column="order_id" jdbcType="BIGINT" javaType="java.lang.Long" />
+      <arg column="product_id" jdbcType="BIGINT" javaType="java.lang.Long" />
+      <arg column="price" jdbcType="DECIMAL" javaType="java.math.BigDecimal" />
+      <arg column="product_name" jdbcType="VARCHAR" javaType="java.lang.String" />
+    </constructor>
+  </resultMap>
+
+  <sql id="Base_Column_List" >
+    order_id, product_id, price, product_name
+  </sql>
+
+  <select id="selectVoInfo" resultType="com.secondKill.vo.OrderInformationVo">
+    select o.order_id, o.product_id, o.price, p.product_name,o.create_time,o.update_time
+    from `order` as o, product as p
+    where o.product_id = p.product_id and o.user_id = #{userId}
+  </select>
+</mapper>

@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/context
+       http://www.springframework.org/schema/context/spring-context.xsd
+       http://www.springframework.org/schema/mvc
+       http://www.springframework.org/schema/mvc/spring-mvc.xsd
+       http://www.springframework.org/schema/aop
+       http://www.springframework.org/schema/aop/spring-aop.xsd">       
+    
+    <!-- 该文件主要是是对springMVC的dispatchServlet要处理的XML文件，主要是对controller类进行控制-->  
+    	
+	<!-- 自动扫描base-package指定包或子包下的Java文件，如果扫描到有Spring的相关
+         注解的类，则把这些类注册为Spring的bean -->	
+	<context:component-scan base-package="com.secondKill" />
+
+
+	<bean id="objectMapper" class="com.secondKill.util.CustomObjectMapper" init-method="init">
+		<!--驼峰命名-->
+	    <property name="camelCaseToLowerCaseWithUnderscores" value="false"/>
+	    <property name="dateFormatPattern" value="yyyy-MM-dd HH:mm:ss"/>
+	</bean> 
+	
+	<!-- 自动注册RequestMappingHandlerMapping与RequestMappingHandlerAdapter两个Bean,
+	     以及后续的adapter和异常处理器等5个bean，这是Spring MVC为@Controller分发请求所必需的
+	     即将这几个bean注册入工厂模式以后，就可以完成@requestmapping以及参数的映射的处理 -->
+	<mvc:annotation-driven>
+        <mvc:message-converters>
+            <!-- 注册实现了HttpMessageConverter接口的bean，
+                 来对requestbody 或responsebody中的数据进行解析 -->
+            <bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
+        		<property name="objectMapper" ref="objectMapper"/>
+        	</bean>
+        </mvc:message-converters>
+    </mvc:annotation-driven>
+
+	<!--<mvc:annotation-driven>-->
+		<!--<mvc:message-converters>-->
+			<!--<bean class="org.springframework.http.converter.StringHttpMessageConverter">-->
+				<!--<property name="supportedMediaTypes">-->
+					<!--<list>-->
+						<!--<value>text/plain;charset=UTF-8</value>-->
+						<!--<value>text/html;charset=UTF-8</value>-->
+					<!--</list>-->
+				<!--</property>-->
+			<!--</bean>-->
+			<!--&lt;!&ndash;自动反序列化&ndash;&gt;-->
+			<!--<bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">-->
+				<!--<property name="supportedMediaTypes">-->
+					<!--<list>-->
+						<!--<value>application/json;charset=UTF-8</value>-->
+					<!--</list>-->
+				<!--</property>-->
+			<!--</bean>-->
+		<!--</mvc:message-converters>-->
+	<!--</mvc:annotation-driven>-->
+    
+    <!--使用默认的Servlet来响应静态文件. 也可以通过<mvc:resources />实现 -->
+    <!-- 对进入DispatcherServlet的URL进行筛查，如果发现是静态资源的请求，就将该请求转由Web应用服务器默认的Servlet处理，
+        如果不是静态资源的请求，才由DispatcherServlet继续处理。一般Web应用服务器默认的Servlet名称是"default"，
+        因此DefaultServletHttpRequestHandler可以找到它。如果你所有的Web应用服务器的默认Servlet名称不是"default"，
+        则需要通过default-servlet-name属性显示指定：
+        <mvc:default-servlet-handler default-servlet-name="所使用的Web服务器默认使用的Servlet名称" /> -->
+    <mvc:default-servlet-handler/>         
+	
+	<!-- 文件上传解析器 -->
+	<bean id="multipartResolver"
+		class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+		<!-- 设定默认编码 -->
+		<property name="defaultEncoding" value="UTF-8"></property>
+		<!-- 设定文件上传的最大值5MB，5*1024*1024 -->
+		<property name="maxUploadSize" value="5242880"></property>
+	</bean>
+
+	<!-- SpringMVC在超出上传文件限制时，会抛出org.springframework.web.multipart.MaxUploadSizeExceededException -->
+	<!-- 该异常是SpringMVC在检查上传的文件信息时抛出来的，而且此时还没有进入到Controller方法中 -->
+	<bean id="exceptionResolver"
+		class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">
+		<property name="exceptionMappings">
+		<props>
+		<!-- 遇到MaxUploadSizeExceededException异常时，自动跳转到XXX页面 -->
+		<prop
+			 key="org.springframework.web.multipart.MaxUploadSizeExceededException">index.jsp</prop>
+		</props>
+		</property>
+	</bean>
+	
+	
+	    <!--<bean id="loginAspect" class="com.sdx.authent.interceptor.LoginAspect" />-->
+    <!--<bean id="permissionAspect" class="com.sdx.authent.interceptor.PermissionAspect" />-->
+
+   <!-- 由于该切面的切入点是针对@RequestMapping注解，这些注解只在controller包下，
+         因此，该xml文件应该被包含在springmvc dispatchservlert需要解析的xml文件下。 -->
+    <!--<aop:config>-->
+        <!--<aop:aspect ref="loginAspect">-->
+            <!--<aop:around method="execute" pointcut="@annotation(org.springframework.web.bind.annotation.RequestMapping)"/>-->
+        <!--</aop:aspect>-->
+        <!--<aop:aspect ref="securityAspect">-->
+            <!--<aop:around method="execute" pointcut="@annotation(org.springframework.web.bind.annotation.RequestMapping)"/>-->
+        <!--</aop:aspect>-->
+        <!--<aop:aspect ref="permissionAspect">-->
+            <!--<aop:around method="execute" pointcut="@annotation(org.springframework.web.bind.annotation.RequestMapping)"/>-->
+        <!--</aop:aspect>-->
+    <!--</aop:config> -->
+    <aop:aspectj-autoproxy/>
+</beans>
